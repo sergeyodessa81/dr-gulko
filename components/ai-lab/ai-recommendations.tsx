@@ -5,8 +5,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Brain, Sparkles, ArrowRight, X } from "lucide-react"
-import { getUserRecommendations, markRecommendationViewed, generateAIRecommendations } from "@/lib/ai-lab"
-import type { AIRecommendation } from "@/lib/ai-lab"
+
+interface AIRecommendation {
+  id: string
+  user_id: string
+  recommended_content: any
+  recommendation_type: "learning_path" | "module" | "content"
+  confidence_score: number
+  is_viewed: boolean
+  created_at: string
+  expires_at: string
+}
 
 interface AIRecommendationsProps {
   userId: string
@@ -23,8 +32,11 @@ export function AIRecommendations({ userId }: AIRecommendationsProps) {
 
   const loadRecommendations = async () => {
     try {
-      const recs = await getUserRecommendations(userId)
-      setRecommendations(recs)
+      const response = await fetch("/api/ai-lab/recommendations")
+      if (response.ok) {
+        const data = await response.json()
+        setRecommendations(data.recommendations)
+      }
     } catch (error) {
       console.error("Error loading recommendations:", error)
     } finally {
@@ -35,8 +47,13 @@ export function AIRecommendations({ userId }: AIRecommendationsProps) {
   const handleGenerateRecommendations = async () => {
     setGenerating(true)
     try {
-      const newRecs = await generateAIRecommendations(userId)
-      setRecommendations((prev) => [...newRecs, ...prev])
+      const response = await fetch("/api/ai-lab/recommendations/generate", {
+        method: "POST",
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setRecommendations((prev) => [...data.recommendations, ...prev])
+      }
     } catch (error) {
       console.error("Error generating recommendations:", error)
     } finally {
@@ -46,8 +63,12 @@ export function AIRecommendations({ userId }: AIRecommendationsProps) {
 
   const handleDismissRecommendation = async (recommendationId: string) => {
     try {
-      await markRecommendationViewed(recommendationId)
-      setRecommendations((prev) => prev.filter((rec) => rec.id !== recommendationId))
+      const response = await fetch(`/api/ai-lab/recommendations/${recommendationId}/viewed`, {
+        method: "PATCH",
+      })
+      if (response.ok) {
+        setRecommendations((prev) => prev.filter((rec) => rec.id !== recommendationId))
+      }
     } catch (error) {
       console.error("Error dismissing recommendation:", error)
     }

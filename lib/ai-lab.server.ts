@@ -52,7 +52,7 @@ export interface AIRecommendation {
   expires_at: string
 }
 
-export async function getLearningPaths(userId?: string, language = "en"): Promise<LearningPath[]> {
+export const getLearningPaths = async (userId?: string, language = "en"): Promise<LearningPath[]> => {
   const supabase = await createClient()
 
   const query = supabase
@@ -75,7 +75,6 @@ export async function getLearningPaths(userId?: string, language = "en"): Promis
     return []
   }
 
-  // If user is provided, filter progress for that user
   if (userId && paths) {
     return paths.map((path) => ({
       ...path,
@@ -89,7 +88,7 @@ export async function getLearningPaths(userId?: string, language = "en"): Promis
   return paths || []
 }
 
-export async function getLearningPath(pathId: string, userId?: string): Promise<LearningPath | null> {
+export const getLearningPath = async (pathId: string, userId?: string): Promise<LearningPath | null> => {
   const supabase = await createClient()
 
   const { data: path, error } = await supabase
@@ -109,7 +108,6 @@ export async function getLearningPath(pathId: string, userId?: string): Promise<
     return null
   }
 
-  // Filter progress for specific user
   if (userId && path.modules) {
     path.modules = path.modules.map((module: any) => ({
       ...module,
@@ -120,36 +118,12 @@ export async function getLearningPath(pathId: string, userId?: string): Promise<
   return path
 }
 
-export async function getLearningModule(moduleId: string, userId?: string): Promise<LearningModule | null> {
-  const supabase = await createClient()
-
-  const { data: module, error } = await supabase
-    .from("learning_modules")
-    .select(`
-      *,
-      progress:user_progress(*)
-    `)
-    .eq("id", moduleId)
-    .single()
-
-  if (error || !module) {
-    return null
-  }
-
-  // Filter progress for specific user
-  if (userId && module.progress) {
-    module.progress = module.progress.find((p: any) => p.user_id === userId) || null
-  }
-
-  return module
-}
-
-export async function updateUserProgress(
+export const updateUserProgress = async (
   userId: string,
   moduleId: string,
   progressPercentage: number,
   notes?: string,
-): Promise<void> {
+): Promise<void> => {
   const supabase = await createClient()
 
   const updateData: any = {
@@ -173,7 +147,7 @@ export async function updateUserProgress(
   }
 }
 
-export async function getUserRecommendations(userId: string): Promise<AIRecommendation[]> {
+export const getUserRecommendations = async (userId: string): Promise<AIRecommendation[]> => {
   const supabase = await createClient()
 
   const { data: recommendations, error } = await supabase
@@ -192,11 +166,10 @@ export async function getUserRecommendations(userId: string): Promise<AIRecommen
   return recommendations || []
 }
 
-export async function generateAIRecommendations(userId: string): Promise<AIRecommendation[]> {
+export const generateAIRecommendations = async (userId: string): Promise<AIRecommendation[]> => {
   const supabase = await createClient()
 
   try {
-    // Get user's current progress
     const { data: userProgress } = await supabase
       .from("user_progress")
       .select(`
@@ -208,14 +181,12 @@ export async function generateAIRecommendations(userId: string): Promise<AIRecom
       `)
       .eq("user_id", userId)
 
-    // Get user's profile for personalization
     const { data: profile } = await supabase
       .from("profiles")
       .select("role, preferred_language, specialization")
       .eq("id", userId)
       .single()
 
-    // Get recent activity (simplified for now)
     const recentActivity = [
       { type: "module_completion", description: "Completed Basic Trauma Surgery module" },
       { type: "content_view", description: "Viewed Orthopedic Procedures article" },
@@ -228,7 +199,6 @@ export async function generateAIRecommendations(userId: string): Promise<AIRecom
       recentActivity,
     })
 
-    // Convert AI recommendations to database format
     const recommendationsToInsert = aiRecommendations.map((rec: any) => ({
       user_id: userId,
       recommended_content: {
@@ -241,10 +211,9 @@ export async function generateAIRecommendations(userId: string): Promise<AIRecom
       recommendation_type: rec.recommendation_type as "learning_path" | "module" | "content",
       confidence_score: rec.confidence_score,
       is_viewed: false,
-      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     }))
 
-    // Insert recommendations into database
     const { data: insertedRecommendations, error } = await supabase
       .from("ai_recommendations")
       .insert(recommendationsToInsert)
@@ -262,7 +231,7 @@ export async function generateAIRecommendations(userId: string): Promise<AIRecom
   }
 }
 
-export async function summarizeContent(content: string, language = "en"): Promise<string> {
+export const summarizeContent = async (content: string, language = "en"): Promise<string> => {
   try {
     return await groqClient.summarizeContent({
       content,
@@ -275,7 +244,7 @@ export async function summarizeContent(content: string, language = "en"): Promis
   }
 }
 
-export function calculatePathProgress(modules: LearningModule[]): number {
+export const calculatePathProgress = (modules: LearningModule[]): number => {
   if (!modules || modules.length === 0) return 0
 
   const totalProgress = modules.reduce((sum, module) => {
@@ -285,10 +254,9 @@ export function calculatePathProgress(modules: LearningModule[]): number {
   return Math.round(totalProgress / modules.length)
 }
 
-export function getNextModule(modules: LearningModule[]): LearningModule | null {
+export const getNextModule = (modules: LearningModule[]): LearningModule | null => {
   if (!modules || modules.length === 0) return null
 
-  // Find the first incomplete module
   const sortedModules = modules.sort((a, b) => a.module_order - b.module_order)
 
   for (const module of sortedModules) {
@@ -297,10 +265,10 @@ export function getNextModule(modules: LearningModule[]): LearningModule | null 
     }
   }
 
-  return null // All modules completed
+  return null
 }
 
-export async function markRecommendationViewed(recommendationId: string): Promise<void> {
+export const markRecommendationViewed = async (recommendationId: string): Promise<void> => {
   const supabase = await createClient()
 
   const { error } = await supabase.from("ai_recommendations").update({ is_viewed: true }).eq("id", recommendationId)

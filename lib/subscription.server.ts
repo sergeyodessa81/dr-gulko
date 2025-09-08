@@ -27,7 +27,7 @@ export interface UserSubscription {
   plan?: SubscriptionPlan
 }
 
-export async function getSubscriptionPlans(): Promise<SubscriptionPlan[]> {
+export const getSubscriptionPlans = async (): Promise<SubscriptionPlan[]> => {
   const supabase = await createClient()
 
   const { data: plans, error } = await supabase
@@ -44,7 +44,7 @@ export async function getSubscriptionPlans(): Promise<SubscriptionPlan[]> {
   return plans || []
 }
 
-export async function getUserSubscription(userId: string): Promise<UserSubscription | null> {
+export const getUserSubscription = async (userId: string): Promise<UserSubscription | null> => {
   const supabase = await createClient()
 
   const { data: subscription, error } = await supabase
@@ -64,10 +64,9 @@ export async function getUserSubscription(userId: string): Promise<UserSubscript
   return subscription
 }
 
-export async function createCheckoutSession(userId: string, planId: string, priceId: string, isYearly = false) {
+export const createCheckoutSession = async (userId: string, planId: string, priceId: string, isYearly = false) => {
   const supabase = await createClient()
 
-  // Get user profile
   const { data: profile } = await supabase
     .from("profiles")
     .select("email, stripe_customer_id")
@@ -80,7 +79,6 @@ export async function createCheckoutSession(userId: string, planId: string, pric
 
   let customerId = profile.stripe_customer_id
 
-  // Create Stripe customer if doesn't exist
   if (!customerId) {
     const customer = await stripe.customers.create({
       email: profile.email,
@@ -91,11 +89,9 @@ export async function createCheckoutSession(userId: string, planId: string, pric
 
     customerId = customer.id
 
-    // Update profile with customer ID
     await supabase.from("profiles").update({ stripe_customer_id: customerId }).eq("id", userId)
   }
 
-  // Create checkout session
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     payment_method_types: ["card"],
@@ -118,12 +114,11 @@ export async function createCheckoutSession(userId: string, planId: string, pric
   return session
 }
 
-export async function cancelSubscription(subscriptionId: string) {
+export const cancelSubscription = async (subscriptionId: string) => {
   const subscription = await stripe.subscriptions.update(subscriptionId, {
     cancel_at_period_end: true,
   })
 
-  // Update database
   const supabase = await createClient()
   await supabase
     .from("user_subscriptions")
@@ -133,12 +128,11 @@ export async function cancelSubscription(subscriptionId: string) {
   return subscription
 }
 
-export async function reactivateSubscription(subscriptionId: string) {
+export const reactivateSubscription = async (subscriptionId: string) => {
   const subscription = await stripe.subscriptions.update(subscriptionId, {
     cancel_at_period_end: false,
   })
 
-  // Update database
   const supabase = await createClient()
   await supabase
     .from("user_subscriptions")
@@ -148,7 +142,7 @@ export async function reactivateSubscription(subscriptionId: string) {
   return subscription
 }
 
-export function hasAccess(userRole: string, requiredRole: string): boolean {
+export const hasAccess = (userRole: string, requiredRole: string): boolean => {
   const roleHierarchy = {
     free: 0,
     member: 1,

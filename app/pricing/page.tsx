@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { getSubscriptionPlans, getUserSubscription, createCheckoutSession } from "@/lib/subscription"
 import { PricingCard } from "@/components/subscription/pricing-card"
 import { BillingToggle } from "@/components/subscription/billing-toggle"
 import { Button } from "@/components/ui/button"
@@ -32,14 +31,16 @@ export default function PricingPage() {
         } = await supabase.auth.getUser()
         setUser(user)
 
-        // Get subscription plans
-        const plansData = await getSubscriptionPlans()
+        const plansResponse = await fetch("/api/subscription/plans")
+        const plansData = await plansResponse.json()
         setPlans(plansData)
 
-        // Get user subscription if logged in
         if (user) {
-          const subscription = await getUserSubscription(user.id)
-          setUserSubscription(subscription)
+          const subscriptionResponse = await fetch("/api/subscription/user")
+          if (subscriptionResponse.ok) {
+            const subscription = await subscriptionResponse.json()
+            setUserSubscription(subscription)
+          }
         }
       } catch (error) {
         console.error("Error loading pricing data:", error)
@@ -62,20 +63,20 @@ export default function PricingPage() {
 
     if (plan.name === "Free") {
       try {
-        // Assign free plan to user
-        const { error } = await supabase.from("user_subscriptions").upsert({
-          user_id: user.id,
-          plan_id: planId,
-          status: "active",
-          current_period_start: new Date().toISOString(),
-          current_period_end: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
+        const response = await fetch("/api/subscription/free", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ planId }),
         })
 
-        if (error) throw error
+        if (!response.ok) throw new Error("Failed to assign free plan")
 
         // Refresh subscription data
-        const subscription = await getUserSubscription(user.id)
-        setUserSubscription(subscription)
+        const subscriptionResponse = await fetch("/api/subscription/user")
+        if (subscriptionResponse.ok) {
+          const subscription = await subscriptionResponse.json()
+          setUserSubscription(subscription)
+        }
 
         router.push("/dashboard")
       } catch (error) {
@@ -93,11 +94,19 @@ export default function PricingPage() {
     setProcessingPlan(planId)
 
     try {
-      const session = await createCheckoutSession(user.id, planId, priceId, isYearlyPlan)
+      const response = await fetch("/api/subscription/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planId, priceId, isYearly: isYearlyPlan }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) throw new Error(data.error || "Failed to create checkout session")
 
       // Redirect to Stripe Checkout
-      if (session.url) {
-        window.location.href = session.url
+      if (data.url) {
+        window.location.href = data.url
       }
     } catch (error) {
       console.error("Error creating checkout session:", error)

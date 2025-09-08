@@ -1,0 +1,41 @@
+{
+  "name": "Dr. Gulko - German Learning Platform",
+  "short_name": "German Learning",
+  "description": "Master German from A0 to C1 with AI-powered learning and medical specialization",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.jpg",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512x512.jpg",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["education", "language", "learning"],
+  "shortcuts": [
+    {
+      "name": "AI Teacher",
+      "short_name": "AI Teacher",
+      "description": "Start learning with AI teacher",
+      "url": "/lab/teacher",
+      "icons": [{ "src": "/icon-192x192.jpg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Writing Lab",
+      "short_name": "Writing",
+      "description": "Practice German writing",
+      "url": "/lab/writing",
+      "icons": [{ "src": "/icon-192x192.jpg", "sizes": "192x192" }]
+    }
+  ]
+}

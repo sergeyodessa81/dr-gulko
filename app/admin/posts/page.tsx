@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { getPostsForAdmin, updatePostStatus } from "@/lib/admin"
 import { formatDistanceToNow } from "date-fns"
 import { Plus, Eye, Edit, Crown } from "lucide-react"
 
@@ -36,7 +35,18 @@ export default function AdminPostsPage() {
 
   const loadPosts = async () => {
     try {
-      const { posts: postsData } = await getPostsForAdmin(1, 50, statusFilter === "all" ? undefined : statusFilter)
+      const params = new URLSearchParams({
+        page: "1",
+        limit: "50",
+      })
+      if (statusFilter !== "all") {
+        params.append("status", statusFilter)
+      }
+
+      const response = await fetch(`/api/admin/posts?${params}`)
+      if (!response.ok) throw new Error("Failed to fetch posts")
+
+      const { posts: postsData } = await response.json()
       setPosts(postsData)
     } catch (error) {
       console.error("Error loading posts:", error)
@@ -48,7 +58,14 @@ export default function AdminPostsPage() {
   const handleStatusUpdate = async (postId: string, newStatus: string) => {
     setUpdatingStatus(postId)
     try {
-      await updatePostStatus(postId, newStatus)
+      const response = await fetch(`/api/admin/posts/${postId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      })
+
+      if (!response.ok) throw new Error("Failed to update status")
+
       setPosts(
         posts.map((post) =>
           post.id === postId

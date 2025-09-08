@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Check, Crown, Zap } from "lucide-react"
-import type { SubscriptionPlan } from "@/lib/subscription.server"
+import type { SubscriptionPlan } from "@/lib/types/subscription"
 
 interface PricingCardProps {
   plan: SubscriptionPlan

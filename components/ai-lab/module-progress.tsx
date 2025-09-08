@@ -7,8 +7,8 @@ import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, Clock, Crown, BookOpen } from "lucide-react"
-import { updateUserProgress } from "@/lib/ai-lab"
-import type { LearningModule } from "@/lib/ai-lab"
+import { updateUserProgress } from "@/lib/ai-lab.server"
+import type { LearningModule } from "@/lib/ai-lab.server"
 
 interface ModuleProgressProps {
   module: LearningModule

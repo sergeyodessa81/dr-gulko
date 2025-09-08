@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { getLearningPaths } from "@/lib/ai-lab"
+import { getLearningPaths } from "@/lib/ai-lab.server"
 import { LearningPathCard } from "@/components/ai-lab/learning-path-card"
 import { AIRecommendations } from "@/components/ai-lab/ai-recommendations"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

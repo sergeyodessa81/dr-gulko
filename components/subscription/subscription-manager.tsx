@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Crown, Calendar, CreditCard, AlertTriangle } from "lucide-react"
-import { cancelSubscription, reactivateSubscription } from "@/lib/subscription"
-import type { UserSubscription } from "@/lib/subscription"
+import { cancelSubscription, reactivateSubscription } from "@/lib/subscription.server"
+import type { UserSubscription } from "@/lib/subscription.server"
 
 interface SubscriptionManagerProps {
   subscription: UserSubscription | null

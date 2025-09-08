@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { createCheckoutSession } from "@/lib/subscription"
+import { createCheckoutSession } from "@/lib/subscription.server"
 
 export async function POST(request: NextRequest) {
   try {

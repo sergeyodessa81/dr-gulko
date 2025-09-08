@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { getUserRecommendations } from "@/lib/ai-lab"
+import { getUserRecommendations } from "@/lib/ai-lab.server"
 
 export async function GET(request: NextRequest) {
   try {

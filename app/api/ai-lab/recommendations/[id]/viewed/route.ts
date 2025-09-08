@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { markRecommendationViewed } from "@/lib/ai-lab"
+import { markRecommendationViewed } from "@/lib/ai-lab.server"
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {

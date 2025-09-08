@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ArrowRight, Shield, Clock, Users } from "lucide-react"
 import type { User } from "@supabase/supabase-js"
-import type { SubscriptionPlan, UserSubscription } from "@/lib/subscription"
+import type { SubscriptionPlan, UserSubscription } from "@/lib/subscription.server"
 
 export default function PricingPage() {
   const [plans, setPlans] = useState<SubscriptionPlan[]>([])

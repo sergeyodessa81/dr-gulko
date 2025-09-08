@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
-import { getLearningPath, calculatePathProgress, getNextModule } from "@/lib/ai-lab"
+import { getLearningPath, calculatePathProgress, getNextModule } from "@/lib/ai-lab.server"
 import { ModuleProgress } from "@/components/ai-lab/module-progress"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { getUserSubscription } from "@/lib/subscription"
+import { getUserSubscription } from "@/lib/subscription.server"
 import { SubscriptionManager } from "@/components/subscription/subscription-manager"
 
 export default async function SubscriptionPage() {

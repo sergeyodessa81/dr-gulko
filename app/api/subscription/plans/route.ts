@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { getSubscriptionPlans } from "@/lib/subscription"
+import { getSubscriptionPlans } from "@/lib/subscription.server"
 
 export async function GET() {
   try {

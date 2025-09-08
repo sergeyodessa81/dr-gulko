@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { Clock, BookOpen, Trophy, ArrowRight } from "lucide-react"
-import { calculatePathProgress, getNextModule } from "@/lib/ai-lab"
-import type { LearningPath } from "@/lib/ai-lab"
+import { calculatePathProgress, getNextModule } from "@/lib/ai-lab.server"
+import type { LearningPath } from "@/lib/ai-lab.server"
 
 interface LearningPathCardProps {
   path: LearningPath

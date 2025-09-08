@@ -7,7 +7,6 @@ import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, Clock, Crown, BookOpen } from "lucide-react"
-import { updateUserProgress } from "@/lib/ai-lab.server"
 import type { LearningModule } from "@/lib/ai-lab.server"
 
 interface ModuleProgressProps {
@@ -24,7 +23,22 @@ export function ModuleProgress({ module, userId, onProgressUpdate }: ModuleProgr
   const handleProgressUpdate = async (newProgress: number) => {
     setUpdating(true)
     try {
-      await updateUserProgress(userId, module.id, newProgress, notes)
+      const response = await fetch("/api/ai-lab/progress", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          moduleId: module.id,
+          progressPercentage: newProgress,
+          notes,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to update progress")
+      }
+
       setProgress(newProgress)
       onProgressUpdate?.()
     } catch (error) {
@@ -37,7 +51,22 @@ export function ModuleProgress({ module, userId, onProgressUpdate }: ModuleProgr
   const handleNotesUpdate = async () => {
     setUpdating(true)
     try {
-      await updateUserProgress(userId, module.id, progress, notes)
+      const response = await fetch("/api/ai-lab/progress", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          moduleId: module.id,
+          progressPercentage: progress,
+          notes,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to update notes")
+      }
+
       onProgressUpdate?.()
     } catch (error) {
       console.error("Error updating notes:", error)

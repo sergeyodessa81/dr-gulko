@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Crown, Calendar, CreditCard, AlertTriangle } from "lucide-react"
-import { cancelSubscription, reactivateSubscription } from "@/lib/subscription.server"
 import type { UserSubscription } from "@/lib/subscription.server"
 
 interface SubscriptionManagerProps {
@@ -21,8 +20,20 @@ export function SubscriptionManager({ subscription }: SubscriptionManagerProps) 
 
     setLoading(true)
     try {
-      await cancelSubscription(subscription.stripe_subscription_id)
-      // Refresh the page to show updated status
+      const response = await fetch("/api/subscription/cancel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          subscriptionId: subscription.stripe_subscription_id,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to cancel subscription")
+      }
+
       window.location.reload()
     } catch (error) {
       console.error("Error canceling subscription:", error)
@@ -36,8 +47,20 @@ export function SubscriptionManager({ subscription }: SubscriptionManagerProps) 
 
     setLoading(true)
     try {
-      await reactivateSubscription(subscription.stripe_subscription_id)
-      // Refresh the page to show updated status
+      const response = await fetch("/api/subscription/reactivate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          subscriptionId: subscription.stripe_subscription_id,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to reactivate subscription")
+      }
+
       window.location.reload()
     } catch (error) {
       console.error("Error reactivating subscription:", error)

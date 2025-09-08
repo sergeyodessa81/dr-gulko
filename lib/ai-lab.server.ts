@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { groqClient } from "./ai/groq-client"
 import type { LearningPath, LearningModule, AIRecommendation } from "./types/ai-lab"
 
-export const getLearningPaths = async (userId?: string, language = "en"): Promise<LearningPath[]> => {
+async function getLearningPaths(userId?: string, language = "en"): Promise<LearningPath[]> {
   const supabase = await createClient()
 
   const query = supabase
@@ -39,7 +39,7 @@ export const getLearningPaths = async (userId?: string, language = "en"): Promis
   return paths || []
 }
 
-export const getLearningPath = async (pathId: string, userId?: string): Promise<LearningPath | null> => {
+async function getLearningPath(pathId: string, userId?: string): Promise<LearningPath | null> {
   const supabase = await createClient()
 
   const { data: path, error } = await supabase
@@ -69,12 +69,12 @@ export const getLearningPath = async (pathId: string, userId?: string): Promise<
   return path
 }
 
-export const updateUserProgress = async (
+async function updateUserProgress(
   userId: string,
   moduleId: string,
   progressPercentage: number,
   notes?: string,
-): Promise<void> => {
+): Promise<void> {
   const supabase = await createClient()
 
   const updateData: any = {
@@ -98,7 +98,7 @@ export const updateUserProgress = async (
   }
 }
 
-export const getUserRecommendations = async (userId: string): Promise<AIRecommendation[]> => {
+async function getUserRecommendations(userId: string): Promise<AIRecommendation[]> {
   const supabase = await createClient()
 
   const { data: recommendations, error } = await supabase
@@ -117,7 +117,7 @@ export const getUserRecommendations = async (userId: string): Promise<AIRecommen
   return recommendations || []
 }
 
-export const generateAIRecommendations = async (userId: string): Promise<AIRecommendation[]> => {
+async function generateAIRecommendations(userId: string): Promise<AIRecommendation[]> {
   const supabase = await createClient()
 
   try {
@@ -182,7 +182,7 @@ export const generateAIRecommendations = async (userId: string): Promise<AIRecom
   }
 }
 
-export const summarizeContent = async (content: string, language = "en"): Promise<string> => {
+async function summarizeContent(content: string, language = "en"): Promise<string> {
   try {
     return await groqClient.summarizeContent({
       content,
@@ -195,7 +195,7 @@ export const summarizeContent = async (content: string, language = "en"): Promis
   }
 }
 
-export const calculatePathProgress = (modules: LearningModule[]): number => {
+function calculatePathProgress(modules: LearningModule[]): number {
   if (!modules || modules.length === 0) return 0
 
   const totalProgress = modules.reduce((sum, module) => {
@@ -205,7 +205,7 @@ export const calculatePathProgress = (modules: LearningModule[]): number => {
   return Math.round(totalProgress / modules.length)
 }
 
-export const getNextModule = (modules: LearningModule[]): LearningModule | null => {
+function getNextModule(modules: LearningModule[]): LearningModule | null {
   if (!modules || modules.length === 0) return null
 
   const sortedModules = modules.sort((a, b) => a.module_order - b.module_order)
@@ -219,7 +219,7 @@ export const getNextModule = (modules: LearningModule[]): LearningModule | null 
   return null
 }
 
-export const markRecommendationViewed = async (recommendationId: string): Promise<void> => {
+async function markRecommendationViewed(recommendationId: string): Promise<void> {
   const supabase = await createClient()
 
   const { error } = await supabase.from("ai_recommendations").update({ is_viewed: true }).eq("id", recommendationId)
@@ -227,4 +227,16 @@ export const markRecommendationViewed = async (recommendationId: string): Promis
   if (error) {
     throw new Error("Failed to mark recommendation as viewed")
   }
+}
+
+export {
+  getLearningPaths,
+  calculatePathProgress,
+  getNextModule,
+  summarizeContent,
+  updateUserProgress,
+  getUserRecommendations,
+  getLearningPath,
+  generateAIRecommendations,
+  markRecommendationViewed,
 }

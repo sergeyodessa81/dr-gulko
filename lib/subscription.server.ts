@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { stripe } from "@/lib/stripe"
 import type { SubscriptionPlan, UserSubscription } from "./types/subscription"
 
-export const getSubscriptionPlans = async (): Promise<SubscriptionPlan[]> => {
+async function getSubscriptionPlans(): Promise<SubscriptionPlan[]> {
   const supabase = await createClient()
 
   const { data: plans, error } = await supabase
@@ -20,7 +20,7 @@ export const getSubscriptionPlans = async (): Promise<SubscriptionPlan[]> => {
   return plans || []
 }
 
-export const getUserSubscription = async (userId: string): Promise<UserSubscription | null> => {
+async function getUserSubscription(userId: string): Promise<UserSubscription | null> {
   const supabase = await createClient()
 
   const { data: subscription, error } = await supabase
@@ -40,7 +40,7 @@ export const getUserSubscription = async (userId: string): Promise<UserSubscript
   return subscription
 }
 
-export const createCheckoutSession = async (userId: string, planId: string, priceId: string, isYearly = false) => {
+async function createCheckoutSession(userId: string, planId: string, priceId: string, isYearly = false) {
   const supabase = await createClient()
 
   const { data: profile } = await supabase
@@ -90,7 +90,7 @@ export const createCheckoutSession = async (userId: string, planId: string, pric
   return session
 }
 
-export const cancelSubscription = async (subscriptionId: string) => {
+async function cancelSubscription(subscriptionId: string) {
   const subscription = await stripe.subscriptions.update(subscriptionId, {
     cancel_at_period_end: true,
   })
@@ -104,7 +104,7 @@ export const cancelSubscription = async (subscriptionId: string) => {
   return subscription
 }
 
-export const reactivateSubscription = async (subscriptionId: string) => {
+async function reactivateSubscription(subscriptionId: string) {
   const subscription = await stripe.subscriptions.update(subscriptionId, {
     cancel_at_period_end: false,
   })
@@ -118,7 +118,7 @@ export const reactivateSubscription = async (subscriptionId: string) => {
   return subscription
 }
 
-export const hasAccess = (userRole: string, requiredRole: string): boolean => {
+function hasAccess(userRole: string, requiredRole: string): boolean {
   const roleHierarchy = {
     free: 0,
     member: 1,
@@ -131,3 +131,5 @@ export const hasAccess = (userRole: string, requiredRole: string): boolean => {
 
   return userLevel >= requiredLevel
 }
+
+export { getUserSubscription, cancelSubscription, createCheckoutSession, getSubscriptionPlans, reactivateSubscription }

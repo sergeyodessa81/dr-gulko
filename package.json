@@ -68,6 +68,7 @@
     "rehype-highlight": "latest",
     "rehype-slug": "latest",
     "remark-gfm": "latest",
+    "server-only": "latest",
     "sonner": "latest",
     "stripe": "latest",
     "svelte": "latest",

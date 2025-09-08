@@ -1,3 +1,4 @@
+import "server-only"
 import { google } from "googleapis"
 import { createServerClient } from "@/lib/supabase/server"
 import { cookies } from "next/headers"

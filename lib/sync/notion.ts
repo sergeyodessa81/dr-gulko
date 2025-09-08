@@ -1,3 +1,4 @@
+import "server-only"
 import { Client } from "@notionhq/client"
 import { createServerClient } from "@/lib/supabase/server"
 import { cookies } from "next/headers"

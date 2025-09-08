@@ -1,3 +1,4 @@
+import "server-only"
 import { compileMDX } from "next-mdx-remote/rsc"
 import { createClient } from "@/lib/supabase/server"
 import remarkGfm from "remark-gfm"

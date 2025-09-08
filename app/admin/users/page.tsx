@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { getUsers, updateUserRole } from "@/lib/admin"
 import { formatDistanceToNow } from "date-fns"
 import { Crown, User, Shield } from "lucide-react"
 
@@ -34,8 +33,10 @@ export default function AdminUsersPage() {
 
   const loadUsers = async () => {
     try {
-      const { users: userData } = await getUsers()
-      setUsers(userData)
+      const response = await fetch("/api/admin/users")
+      if (!response.ok) throw new Error("Failed to fetch users")
+      const data = await response.json()
+      setUsers(data.users)
     } catch (error) {
       console.error("Error loading users:", error)
     } finally {
@@ -46,7 +47,16 @@ export default function AdminUsersPage() {
   const handleRoleUpdate = async (userId: string, newRole: string) => {
     setUpdatingRole(userId)
     try {
-      await updateUserRole(userId, newRole)
+      const response = await fetch(`/api/admin/users/${userId}/role`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ role: newRole }),
+      })
+
+      if (!response.ok) throw new Error("Failed to update role")
+
       setUsers(users.map((user) => (user.id === userId ? { ...user, role: newRole } : user)))
     } catch (error) {
       console.error("Error updating role:", error)

@@ -11,11 +11,10 @@ export default function AboutPage() {
             About Dr. Gulko
           </Badge>
           <h1 className="font-serif text-4xl font-bold text-balance mb-6">
-            Leading Expert in Trauma & Orthopedic Surgery
+            MSU medical graduate and future orthopedic surgeon, with clinical, surgical, and teaching experience; a surgical competition winner with publications, committed to evidence-based learning.
           </h1>
           <p className="text-lg text-muted-foreground text-pretty max-w-2xl mx-auto">
-            With over 15 years of experience in trauma and orthopedic surgery, Dr. Gulko combines clinical excellence
-            with innovative educational approaches to advance medical knowledge.
+            
           </p>
         </div>
 
@@ -25,14 +24,14 @@ export default function AboutPage() {
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 mb-4">
                 <Stethoscope className="h-6 w-6 text-primary" />
               </div>
-              <CardTitle>Clinical Excellence</CardTitle>
-              <CardDescription>Specialized in complex trauma cases and advanced orthopedic procedures</CardDescription>
+              <CardTitle>Clinical Experience</CardTitle>
+              <CardDescription>Hands-on training in trauma and orthopedic surgery</CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• 15+ years surgical experience</li>
-                <li>• 1000+ successful procedures</li>
-                <li>• Trauma center leadership</li>
+                <li>• 6 years of medical education (MSU)</li>
+                <li>• Clinical internships in trauma & orthopedics</li>
+                <li>• Assisted in surgeries and patient care</li>
               </ul>
             </CardContent>
           </Card>
@@ -47,9 +46,9 @@ export default function AboutPage() {
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Medical school faculty</li>
-                <li>• Residency program director</li>
-                <li>• International speaker</li>
+                <li>• Teaching experience for medical students</li>
+                <li>• Winner of surgical Olympiads</li>
+                <li>• Experience in USMLE preparation</li>
               </ul>
             </CardContent>
           </Card>
@@ -60,12 +59,12 @@ export default function AboutPage() {
                 <Award className="h-6 w-6 text-primary" />
               </div>
               <CardTitle>Research & Innovation</CardTitle>
-              <CardDescription>Contributing to medical advancement through research and technology</CardDescription>
+              <CardDescription>Contributing to scientific knowledge in medicine through research and technology</CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• 50+ peer-reviewed publications</li>
-                <li>• Medical device innovation</li>
+                <li>• Research on biomaterials and tissue regeneration</li>
+                <li>• Active participation in academic conferences</li>
                 <li>• AI in surgery research</li>
               </ul>
             </CardContent>
@@ -77,13 +76,13 @@ export default function AboutPage() {
                 <Users className="h-6 w-6 text-accent" />
               </div>
               <CardTitle>Global Impact</CardTitle>
-              <CardDescription>Serving medical communities worldwide through education and mentorship</CardDescription>
+              <CardDescription>Building an international medical career</CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• International collaborations</li>
-                <li>• Medical mission work</li>
-                <li>• Multilingual education</li>
+                <li>• Experience in Ukraine, Russia, and Turkey</li>
+                <li>• Multilingual: Russian, Ukrainian, English, German</li>
+                <li>• Future plans: residency in Europe, international collaboration</li>
               </ul>
             </CardContent>
           </Card>

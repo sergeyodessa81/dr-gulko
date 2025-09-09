@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PushNotifications } from "@/components/pwa/push-notifications"
+import { AIRecommendations } from "@/components/ai-lab/ai-recommendations"
+import { getUserRecommendations } from "@/lib/ai-lab.server"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -14,6 +16,19 @@ export default async function DashboardPage() {
 
   // Get user profile
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", data.user.id).single()
+
+  const recommendations = await getUserRecommendations(data.user.id)
+
+  // Get user progress from learning modules
+  const { data: userProgress } = await supabase
+    .from("user_progress")
+    .select("progress_percentage")
+    .eq("user_id", data.user.id)
+
+  const averageProgress =
+    userProgress && userProgress.length > 0
+      ? Math.round(userProgress.reduce((sum, p) => sum + p.progress_percentage, 0) / userProgress.length)
+      : 0
 
   const handleSignOut = async () => {
     "use server"
@@ -42,8 +57,10 @@ export default async function DashboardPage() {
             <CardTitle>Learning Progress</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">0%</p>
-            <p className="text-sm text-muted-foreground">Complete your first module</p>
+            <p className="text-2xl font-bold">{averageProgress}%</p>
+            <p className="text-sm text-muted-foreground">
+              {averageProgress === 0 ? "Complete your first module" : "Keep up the great work!"}
+            </p>
           </CardContent>
         </Card>
 
@@ -62,10 +79,16 @@ export default async function DashboardPage() {
             <CardTitle>AI Recommendations</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">0</p>
-            <p className="text-sm text-muted-foreground">Personalized suggestions</p>
+            <p className="text-2xl font-bold">{recommendations.length}</p>
+            <p className="text-sm text-muted-foreground">
+              {recommendations.length === 0 ? "Generate your first recommendations" : "Personalized suggestions"}
+            </p>
           </CardContent>
         </Card>
+
+        <div className="md:col-span-2 lg:col-span-3">
+          <AIRecommendations userId={data.user.id} />
+        </div>
 
         <div className="md:col-span-2 lg:col-span-3">
           <PushNotifications />

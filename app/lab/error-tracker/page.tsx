@@ -13,22 +13,23 @@ import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 interface LearningError {
   id: string
-  userId: string
-  errorType: "grammar" | "vocabulary" | "pronunciation" | "medical_terminology"
+  user_id: string
+  error_type: "grammar" | "vocabulary" | "pronunciation" | "medical_terminology"
   category: string
   description: string
-  correctAnswer: string
-  userAnswer: string
+  correct_answer: string
+  user_answer: string
   context: string
   frequency: number
-  lastOccurred: string
-  isResolved: boolean
-  createdAt: string
+  last_occurred: string
+  is_resolved: boolean
+  created_at: string
 }
 
 interface ErrorStats {
   totalErrors: number
   resolvedErrors: number
+  resolutionRate: number
   commonCategories: Array<{ category: string; count: number; percentage: number }>
   weeklyTrend: Array<{ week: string; errors: number }>
   improvementAreas: string[]
@@ -41,88 +42,6 @@ export default function ErrorTrackerPage() {
   const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const supabase = createClient()
-
-  // Mock data for demonstration
-  const mockErrors: LearningError[] = [
-    {
-      id: "1",
-      userId: "user1",
-      errorType: "grammar",
-      category: "Articles",
-      description: "Incorrect article usage with 'Krankenhaus'",
-      correctAnswer: "das Krankenhaus",
-      userAnswer: "der Krankenhaus",
-      context: "Medical facility vocabulary",
-      frequency: 3,
-      lastOccurred: "2024-01-15T10:30:00Z",
-      isResolved: false,
-      createdAt: "2024-01-10T09:00:00Z",
-    },
-    {
-      id: "2",
-      userId: "user1",
-      errorType: "vocabulary",
-      category: "Medical Terms",
-      description: "Confusion between 'Arthritis' and 'Arthrose'",
-      correctAnswer: "Arthritis (inflammation)",
-      userAnswer: "Arthrose (inflammation)",
-      context: "Joint conditions terminology",
-      frequency: 2,
-      lastOccurred: "2024-01-14T14:20:00Z",
-      isResolved: false,
-      createdAt: "2024-01-12T11:15:00Z",
-    },
-    {
-      id: "3",
-      userId: "user1",
-      errorType: "grammar",
-      category: "Verb Conjugation",
-      description: "Incorrect past tense of 'haben'",
-      correctAnswer: "hatte",
-      userAnswer: "habte",
-      context: "Patient history description",
-      frequency: 1,
-      lastOccurred: "2024-01-13T16:45:00Z",
-      isResolved: true,
-      createdAt: "2024-01-13T16:45:00Z",
-    },
-    {
-      id: "4",
-      userId: "user1",
-      errorType: "medical_terminology",
-      category: "Anatomy",
-      description: "Incorrect term for 'spine'",
-      correctAnswer: "Wirbelsäule",
-      userAnswer: "Rückenknochen",
-      context: "Anatomical descriptions",
-      frequency: 2,
-      lastOccurred: "2024-01-16T09:10:00Z",
-      isResolved: false,
-      createdAt: "2024-01-14T13:30:00Z",
-    },
-  ]
-
-  const mockStats: ErrorStats = {
-    totalErrors: 8,
-    resolvedErrors: 2,
-    commonCategories: [
-      { category: "Articles", count: 3, percentage: 37.5 },
-      { category: "Medical Terms", count: 2, percentage: 25 },
-      { category: "Verb Conjugation", count: 2, percentage: 25 },
-      { category: "Anatomy", count: 1, percentage: 12.5 },
-    ],
-    weeklyTrend: [
-      { week: "Week 1", errors: 2 },
-      { week: "Week 2", errors: 4 },
-      { week: "Week 3", errors: 1 },
-      { week: "Week 4", errors: 1 },
-    ],
-    improvementAreas: [
-      "Focus on German article system (der, die, das)",
-      "Review medical terminology distinctions",
-      "Practice verb conjugations in medical contexts",
-    ],
-  }
 
   useEffect(() => {
     const getUser = async () => {
@@ -141,9 +60,17 @@ export default function ErrorTrackerPage() {
   const loadErrorData = async () => {
     setLoading(true)
     try {
-      // In a real implementation, this would fetch from the database
-      setErrors(mockErrors)
-      setStats(mockStats)
+      const [errorsResponse, statsResponse] = await Promise.all([fetch("/api/errors"), fetch("/api/errors/stats")])
+
+      if (errorsResponse.ok) {
+        const errorsData = await errorsResponse.json()
+        setErrors(errorsData.errors || [])
+      }
+
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json()
+        setStats(statsData)
+      }
     } catch (error) {
       console.error("Error loading error data:", error)
     } finally {
@@ -152,7 +79,19 @@ export default function ErrorTrackerPage() {
   }
 
   const markAsResolved = async (errorId: string) => {
-    setErrors((prev) => prev.map((error) => (error.id === errorId ? { ...error, isResolved: true } : error)))
+    try {
+      const response = await fetch(`/api/errors/${errorId}/resolve`, {
+        method: "PATCH",
+      })
+
+      if (response.ok) {
+        setErrors((prev) => prev.map((error) => (error.id === errorId ? { ...error, is_resolved: true } : error)))
+        // Reload stats to reflect the change
+        loadErrorData()
+      }
+    } catch (error) {
+      console.error("Error marking error as resolved:", error)
+    }
   }
 
   const getErrorTypeIcon = (type: string) => {
@@ -190,7 +129,18 @@ export default function ErrorTrackerPage() {
 
   const categories = ["all", ...Array.from(new Set(errors.map((error) => error.category)))]
 
-  if (!user || loading) return null
+  if (!user || loading) {
+    return (
+      <div className="container py-8 max-w-6xl mx-auto">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading error tracking data...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container py-8 max-w-6xl mx-auto">
@@ -246,9 +196,7 @@ export default function ErrorTrackerPage() {
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4 text-blue-600" />
                   <div>
-                    <div className="text-2xl font-bold">
-                      {Math.round((stats.resolvedErrors / stats.totalErrors) * 100)}%
-                    </div>
+                    <div className="text-2xl font-bold">{Math.round(stats.resolutionRate)}%</div>
                     <div className="text-xs text-muted-foreground">Resolution Rate</div>
                   </div>
                 </div>
@@ -269,200 +217,215 @@ export default function ErrorTrackerPage() {
           </div>
         )}
 
-        <Tabs defaultValue="errors" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="errors">Error Log</TabsTrigger>
-            <TabsTrigger value="patterns">Patterns</TabsTrigger>
-            <TabsTrigger value="improvement">Improvement</TabsTrigger>
-          </TabsList>
+        {errors.length === 0 && !loading ? (
+          <Card>
+            <CardContent className="p-8 text-center">
+              <Target className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No Errors Tracked Yet</h3>
+              <p className="text-muted-foreground">
+                Start using the AI Teacher, Writing Lab, or Mock Tests to begin tracking your learning progress and
+                errors.
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <Tabs defaultValue="errors" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="errors">Error Log</TabsTrigger>
+              <TabsTrigger value="patterns">Patterns</TabsTrigger>
+              <TabsTrigger value="improvement">Improvement</TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="errors" className="space-y-4">
-            {/* Category Filter */}
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => (
-                    <Button
-                      key={category}
-                      variant={selectedCategory === category ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setSelectedCategory(category)}
-                      className="capitalize"
-                    >
-                      {category}
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <TabsContent value="errors" className="space-y-4">
+              {/* Category Filter */}
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex flex-wrap gap-2">
+                    {categories.map((category) => (
+                      <Button
+                        key={category}
+                        variant={selectedCategory === category ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedCategory(category)}
+                        className="capitalize"
+                      >
+                        {category}
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
 
-            {/* Error List */}
-            <div className="space-y-4">
-              {filteredErrors.map((error) => (
-                <Card key={error.id} className={error.isResolved ? "opacity-60" : ""}>
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-4 flex-1">
-                        <div className="text-2xl">{getErrorTypeIcon(error.errorType)}</div>
-                        <div className="flex-1 space-y-3">
-                          <div className="flex items-center gap-2">
-                            <Badge className={getErrorTypeColor(error.errorType)}>
-                              {error.errorType.replace("_", " ")}
-                            </Badge>
-                            <Badge variant="outline">{error.category}</Badge>
-                            {error.frequency > 1 && (
-                              <Badge variant="destructive" className="text-xs">
-                                {error.frequency}x
+              {/* Error List */}
+              <div className="space-y-4">
+                {filteredErrors.map((error) => (
+                  <Card key={error.id} className={error.is_resolved ? "opacity-60" : ""}>
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-4 flex-1">
+                          <div className="text-2xl">{getErrorTypeIcon(error.error_type)}</div>
+                          <div className="flex-1 space-y-3">
+                            <div className="flex items-center gap-2">
+                              <Badge className={getErrorTypeColor(error.error_type)}>
+                                {error.error_type.replace("_", " ")}
                               </Badge>
-                            )}
-                            {error.isResolved && (
-                              <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
-                                Resolved
-                              </Badge>
-                            )}
-                          </div>
-
-                          <div>
-                            <h4 className="font-medium mb-2">{error.description}</h4>
-                            <div className="grid gap-2 md:grid-cols-2 text-sm">
-                              <div>
-                                <span className="font-medium text-red-600">Your answer: </span>
-                                <span className="bg-red-50 px-2 py-1 rounded">{error.userAnswer}</span>
-                              </div>
-                              <div>
-                                <span className="font-medium text-green-600">Correct answer: </span>
-                                <span className="bg-green-50 px-2 py-1 rounded">{error.correctAnswer}</span>
-                              </div>
+                              <Badge variant="outline">{error.category}</Badge>
+                              {error.frequency > 1 && (
+                                <Badge variant="destructive" className="text-xs">
+                                  {error.frequency}x
+                                </Badge>
+                              )}
+                              {error.is_resolved && (
+                                <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
+                                  Resolved
+                                </Badge>
+                              )}
                             </div>
-                            <div className="mt-2 text-sm text-muted-foreground">
-                              <span className="font-medium">Context: </span>
-                              {error.context}
-                            </div>
-                          </div>
 
-                          <div className="flex items-center justify-between text-xs text-muted-foreground">
-                            <span>Last occurred: {new Date(error.lastOccurred).toLocaleDateString()}</span>
-                            {!error.isResolved && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => markAsResolved(error.id)}
-                                className="gap-1"
-                              >
-                                <Target className="h-3 w-3" />
-                                Mark Resolved
-                              </Button>
-                            )}
+                            <div>
+                              <h4 className="font-medium mb-2">{error.description}</h4>
+                              <div className="grid gap-2 md:grid-cols-2 text-sm">
+                                <div>
+                                  <span className="font-medium text-red-600">Your answer: </span>
+                                  <span className="bg-red-50 px-2 py-1 rounded">{error.user_answer}</span>
+                                </div>
+                                <div>
+                                  <span className="font-medium text-green-600">Correct answer: </span>
+                                  <span className="bg-green-50 px-2 py-1 rounded">{error.correct_answer}</span>
+                                </div>
+                              </div>
+                              {error.context && (
+                                <div className="mt-2 text-sm text-muted-foreground">
+                                  <span className="font-medium">Context: </span>
+                                  {error.context}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="flex items-center justify-between text-xs text-muted-foreground">
+                              <span>Last occurred: {new Date(error.last_occurred).toLocaleDateString()}</span>
+                              {!error.is_resolved && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => markAsResolved(error.id)}
+                                  className="gap-1"
+                                >
+                                  <Target className="h-3 w-3" />
+                                  Mark Resolved
+                                </Button>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
 
-          <TabsContent value="patterns" className="space-y-6">
-            {stats && (
-              <>
+            <TabsContent value="patterns" className="space-y-6">
+              {stats && (
+                <>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Error Categories</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {stats.commonCategories.map((category) => (
+                        <div key={category.category} className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium">{category.category}</span>
+                            <span className="text-sm text-muted-foreground">
+                              {category.count} errors ({category.percentage}%)
+                            </span>
+                          </div>
+                          <Progress value={category.percentage} />
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Weekly Trend</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {stats.weeklyTrend.map((week) => (
+                          <div key={week.week} className="flex items-center justify-between">
+                            <span>{week.week}</span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-32 bg-muted rounded-full h-2">
+                                <div
+                                  className="bg-primary h-2 rounded-full"
+                                  style={{ width: `${Math.min((week.errors / 5) * 100, 100)}%` }}
+                                />
+                              </div>
+                              <span className="text-sm font-medium">{week.errors}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </>
+              )}
+            </TabsContent>
+
+            <TabsContent value="improvement" className="space-y-6">
+              {stats && stats.improvementAreas.length > 0 && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Error Categories</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5 text-green-600" />
+                      Improvement Recommendations
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {stats.commonCategories.map((category) => (
-                      <div key={category.category} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">{category.category}</span>
-                          <span className="text-sm text-muted-foreground">
-                            {category.count} errors ({category.percentage}%)
-                          </span>
+                    {stats.improvementAreas.map((area, index) => (
+                      <div key={index} className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-600 text-sm font-medium">
+                          {index + 1}
                         </div>
-                        <Progress value={category.percentage} />
+                        <p className="text-sm">{area}</p>
                       </div>
                     ))}
                   </CardContent>
                 </Card>
+              )}
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Weekly Trend</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {stats.weeklyTrend.map((week) => (
-                        <div key={week.week} className="flex items-center justify-between">
-                          <span>{week.week}</span>
-                          <div className="flex items-center gap-2">
-                            <div className="w-32 bg-muted rounded-full h-2">
-                              <div
-                                className="bg-primary h-2 rounded-full"
-                                style={{ width: `${(week.errors / 5) * 100}%` }}
-                              />
-                            </div>
-                            <span className="text-sm font-medium">{week.errors}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-          </TabsContent>
-
-          <TabsContent value="improvement" className="space-y-6">
-            {stats && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-green-600" />
-                    Improvement Recommendations
-                  </CardTitle>
+                  <CardTitle>Practice Suggestions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {stats.improvementAreas.map((area, index) => (
-                    <div key={index} className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-600 text-sm font-medium">
-                        {index + 1}
-                      </div>
-                      <p className="text-sm">{area}</p>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="border rounded-lg p-4">
+                      <h4 className="font-medium mb-2">📝 Grammar Drills</h4>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Practice German articles and verb conjugations with focused exercises.
+                      </p>
+                      <Button size="sm" variant="outline" className="w-full bg-transparent">
+                        Start Practice
+                      </Button>
                     </div>
-                  ))}
+                    <div className="border rounded-lg p-4">
+                      <h4 className="font-medium mb-2">🏥 Medical Vocabulary</h4>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Review medical terminology with flashcards and context examples.
+                      </p>
+                      <Button size="sm" variant="outline" className="w-full bg-transparent">
+                        Review Terms
+                      </Button>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
-            )}
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Practice Suggestions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-2">📝 Grammar Drills</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Practice German articles and verb conjugations with focused exercises.
-                    </p>
-                    <Button size="sm" variant="outline" className="w-full bg-transparent">
-                      Start Practice
-                    </Button>
-                  </div>
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-2">🏥 Medical Vocabulary</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Review medical terminology with flashcards and context examples.
-                    </p>
-                    <Button size="sm" variant="outline" className="w-full bg-transparent">
-                      Review Terms
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+          </Tabs>
+        )}
       </div>
     </div>
   )

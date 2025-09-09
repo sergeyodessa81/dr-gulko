@@ -11,9 +11,10 @@ export default function AboutPage() {
             About Dr. Gulko
           </Badge>
           <h1 className="font-serif text-4xl font-bold text-balance mb-6">
-            MSU medical graduate and future orthopedic surgeon, with clinical, surgical, and teaching experience; a surgical competition winner with publications, committed to evidence-based learning.
+            MSU medical graduate and future orthopedic surgeon
           </h1>
           <p className="text-lg text-muted-foreground text-pretty max-w-2xl mx-auto">
+           With clinical, surgical, and teaching experience; a surgical competition winner with publications, committed to evidence-based learning.
             
           </p>
         </div>

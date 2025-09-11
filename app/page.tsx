@@ -68,6 +68,9 @@ export default function HomePage() {
                   </Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
+                  <Link href="/lab/german/demo">Try German Demo</Link>
+                </Button>
+                <Button variant="outline" size="lg" asChild>
                   <Link href="/guide">Get Free B2→C1 Guide</Link>
                 </Button>
               </div>
@@ -240,6 +243,9 @@ export default function HomePage() {
                     Start Free Today
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
+                </Button>
+                <Button variant="outline" size="lg" asChild>
+                  <Link href="/lab/german/demo">Try German Demo</Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
                   <Link href="/guide">Download Free Guide</Link>

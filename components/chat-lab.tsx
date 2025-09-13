@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useChat } from "ai/react"
+import { useChat } from "ai"
 import { MessageList } from "./message-list"
 import { InputBar } from "./input-bar"
 import { LimitBanner } from "./limit-banner"

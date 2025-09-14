@@ -1,6 +1,7 @@
+"use client";
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
-"use client"
+
 import { useChat } from "@ai-sdk/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,15 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Send, Trash2, MessageSquare } from "lucide-react"
 import Link from "next/link"
-type PageProps = { searchParams?: Record<string, string | string[] | undefined> };
-
-// безопасный trim для searchParams и любых значений
-const s = (v: unknown) =>
-  typeof v === 'string'
-    ? v.trim()
-    : Array.isArray(v)
-    ? String(v[0] ?? '').trim()
-    : '';
 
 const PRESET_PROMPTS = [
   {
@@ -178,7 +170,8 @@ export default function GermanDemoPage() {
                 disabled={isLoading}
                 className="flex-1"
               />
-              <Button type="submit" disabled={isLoading || !input.trim()}>
+              <Button type="submit" disabled={isLoading || !((input ?? '').trim())}>
+
                 <Send className="h-4 w-4" />
               </Button>
             </form>

@@ -1,5 +1,5 @@
 "use client"
-import { useChat } from "ai/react"
+import { useChat } from "ai"
 import { useMemo } from "react"
 import { parseActionJson } from "@/utils/parseActionJson"
 

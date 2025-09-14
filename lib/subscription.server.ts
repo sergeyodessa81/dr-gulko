@@ -132,4 +132,11 @@ function hasAccess(userRole: string, requiredRole: string): boolean {
   return userLevel >= requiredLevel
 }
 
-export { getUserSubscription, cancelSubscription, createCheckoutSession, getSubscriptionPlans, reactivateSubscription }
+export {
+  getUserSubscription,
+  cancelSubscription,
+  createCheckoutSession,
+  getSubscriptionPlans,
+  reactivateSubscription,
+  hasAccess,
+}

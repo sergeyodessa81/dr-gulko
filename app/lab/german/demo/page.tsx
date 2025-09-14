@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 "use client"
 import { useChat } from "@ai-sdk/react"
 import { Button } from "@/components/ui/button"

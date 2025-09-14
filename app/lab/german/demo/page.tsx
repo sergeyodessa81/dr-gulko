@@ -8,6 +8,15 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Send, Trash2, MessageSquare } from "lucide-react"
 import Link from "next/link"
+type PageProps = { searchParams?: Record<string, string | string[] | undefined> };
+
+// безопасный trim для searchParams и любых значений
+const s = (v: unknown) =>
+  typeof v === 'string'
+    ? v.trim()
+    : Array.isArray(v)
+    ? String(v[0] ?? '').trim()
+    : '';
 
 const PRESET_PROMPTS = [
   {

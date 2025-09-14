@@ -1,0 +1,49 @@
+{
+  "name": "telc B1 Schreiben",
+  "criteria": {
+    "task_completion": {
+      "name": "Aufgabenerfüllung",
+      "max_points": 4,
+      "descriptors": {
+        "4": "Alle Leitpunkte vollständig und angemessen bearbeitet",
+        "3": "Alle Leitpunkte bearbeitet, teilweise oberflächlich",
+        "2": "Die meisten Leitpunkte bearbeitet",
+        "1": "Wenige Leitpunkte bearbeitet",
+        "0": "Aufgabe nicht erkannt oder nicht bearbeitet"
+      }
+    },
+    "coherence": {
+      "name": "Kohärenz und Kohäsion",
+      "max_points": 4,
+      "descriptors": {
+        "4": "Text ist klar strukturiert und gut verknüpft",
+        "3": "Text ist meist gut strukturiert",
+        "2": "Text ist teilweise strukturiert",
+        "1": "Text ist wenig strukturiert",
+        "0": "Text ist unstrukturiert"
+      }
+    },
+    "vocabulary": {
+      "name": "Wortschatz",
+      "max_points": 4,
+      "descriptors": {
+        "4": "Wortschatz ist differenziert und angemessen",
+        "3": "Wortschatz ist meist angemessen",
+        "2": "Wortschatz ist begrenzt aber ausreichend",
+        "1": "Wortschatz ist sehr begrenzt",
+        "0": "Wortschatz reicht nicht aus"
+      }
+    },
+    "grammar": {
+      "name": "Strukturen",
+      "max_points": 4,
+      "descriptors": {
+        "4": "Strukturen sind korrekt und variiert",
+        "3": "Strukturen sind meist korrekt",
+        "2": "Einfache Strukturen meist korrekt",
+        "1": "Viele Strukturfehler",
+        "0": "Strukturen meist falsch"
+      }
+    }
+  }
+}

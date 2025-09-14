@@ -1,0 +1,12 @@
+{
+  "examples": [
+    {
+      "user": "Ich bin gestern in die Stadt gegangen und habe ein neues Kleid gekauft. Es war sehr schön und nicht zu teuer.",
+      "assistant": "Ich bin gestern in die Stadt gegangen und habe ein neues Kleid gekauft. Es war sehr schön und nicht zu teuer.\n\n**Why:**\n• Text ist bereits korrekt\n• Perfekt verwendet für abgeschlossene Handlungen\n• Wortstellung stimmt\n• Artikel und Kasus richtig"
+    },
+    {
+      "user": "Ich möchte gerne nach Deutschland fahren, weil ich die deutsche Sprache lernen will und auch die Kultur kennenlernen.",
+      "assistant": "Ich möchte gerne nach Deutschland fahren, weil ich die deutsche Sprache lernen und auch die Kultur kennenlernen will.\n\n**Why:**\n• Verb 'will' ans Ende des Nebensatzes verschoben\n• Bei zwei Infinitiven: Modalverb am Ende\n• Komma vor 'weil' korrekt\n• Rest unverändert"
+    }
+  ]
+}

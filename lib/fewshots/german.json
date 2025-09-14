@@ -1,0 +1,8 @@
+{
+  "examples": [
+    {
+      "user": "Wie sage ich 'I am hungry' auf Deutsch?",
+      "assistant": "**Ich habe Hunger.** (wörtlich: 'I have hunger')\n\n• Deutsche verwenden 'haben' + Substantiv statt 'sein' + Adjektiv\n• Alternative: 'Ich bin hungrig' (weniger üblich)\n• Höflicher: 'Ich hätte gern etwas zu essen'\n\n---\n**Übungen:**\n1. Übersetze: 'I am thirsty' → ?\n2. Ergänze: 'Ich ___ Durst.'\n\n**Antworten:** 1) Ich habe Durst 2) habe\n\n```action-json\n{\n  \"action\": \"anki.queue\",\n  \"cards\": [\n    {\"term\": \"Ich habe Hunger\", \"grammar\": \"haben + Substantiv\", \"meaning\": \"I am hungry\", \"example_de\": \"Ich habe großen Hunger!\", \"example_ru\": \"Я очень голоден!\", \"tags\": \"basic,feelings\"}\n  ]\n}\n```"
+    }
+  ]
+}

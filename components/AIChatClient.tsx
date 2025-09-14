@@ -21,10 +21,10 @@ export default function AIChatClient({
   }, [messages])
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <div className="border rounded-2xl p-3 h-[60vh] overflow-auto mb-3">
+    <div className="max-w-3xl mx-auto p-4">
+      <div className="border rounded-2xl p-4 h-[60vh] overflow-auto mb-3 bg-white/50">
         {messages.map((m) => (
-          <div key={m.id} className="mb-2">
+          <div key={m.id} className="mb-3">
             <div className="text-xs opacity-60">{m.role}</div>
             <div className="whitespace-pre-wrap leading-relaxed">{String(m.content)}</div>
           </div>
@@ -47,7 +47,6 @@ export default function AIChatClient({
         <div className="mt-4 border rounded-xl p-3">
           <div className="font-medium mb-2">Anki preview ({action.cards?.length})</div>
           <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(action.cards, null, 2)}</pre>
-          <button className="mt-2 border rounded-lg px-3 py-1">Save to CSV</button>
         </div>
       )}
     </div>

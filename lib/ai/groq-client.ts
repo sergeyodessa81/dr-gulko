@@ -209,3 +209,4 @@ Keep responses concise but informative.`
 }
 
 export const groqClient = new GroqAIClient()
+export { groq }

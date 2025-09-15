@@ -1,0 +1,35 @@
+{
+  "id": "mt-001",
+  "title": "Mock Test 1",
+  "lang": "de",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "single",
+      "prompt": "Wählen Sie den richtigen Artikel: ___ Arzt hilft dem Patienten.",
+      "choices": ["der", "die", "das"],
+      "answer": 0,
+      "rubric": "1 Punkt für die richtige Wahl des Artikels."
+    },
+    {
+      "id": "q2",
+      "type": "single",
+      "prompt": "Wählen Sie die korrekte Präposition: Ich warte ___ den Bus.",
+      "choices": ["für", "auf", "um"],
+      "answer": 1,
+      "rubric": "1 Punkt für die richtige Präposition."
+    },
+    {
+      "id": "q3",
+      "type": "short",
+      "prompt": "Setzen Sie den Satz ins Präteritum: ‘Er kommt heute ins Krankenhaus.’",
+      "rubric": "Verwendung der korrekten Präteritum-Form von ‘kommen’ und korrekter Wortstellung. 1 Punkt; Teilkredit 0.5 bei geringfügigen Fehlern."
+    },
+    {
+      "id": "q4",
+      "type": "short",
+      "prompt": "Bildung eines korrekten Nebensatzes mit ‘weil’: ‘Er bleibt zu Hause. Er ist krank.’",
+      "rubric": "Korrekte Nebensatzstruktur mit ‘weil’, Verb am Ende, sinnvolle Interpunktion. 1 Punkt; Teilkredit 0.5 bei kleinen Fehlern."
+    }
+  ]
+}

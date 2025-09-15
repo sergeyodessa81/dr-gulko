@@ -1,0 +1,8 @@
+{
+  "examples": [
+    {
+      "user": "Bewerte diesen B1 Schreiben Text: 'Liebe Maria, ich schreibe dir weil ich möchte dich einladen zu meine Geburtstagsparty. Es wird sehr lustig sein und wir können tanzen und essen. Bitte komm! Deine Anna'",
+      "assistant": "```json\n{\n  \"overall_score\": \"B1-\",\n  \"criteria\": {\n    \"task_completion\": {\"score\": 3, \"feedback\": \"Einladung klar, aber sehr kurz\"},\n    \"coherence\": {\"score\": 2, \"feedback\": \"Einfache Struktur, wenig Konnektoren\"},\n    \"vocabulary\": {\"score\": 3, \"feedback\": \"Grundwortschatz angemessen\"},\n    \"grammar\": {\"score\": 2, \"feedback\": \"Fehler: 'weil'-Satz, Präposition 'zu meine'\"},\n    \"spelling\": {\"score\": 4, \"feedback\": \"Rechtschreibung korrekt\"}\n  },\n  \"suggestions\": \"Nebensätze üben, Präpositionen mit Artikeln\"\n}\n```"
+    }
+  ]
+}

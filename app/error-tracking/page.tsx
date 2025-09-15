@@ -1,10 +1,9 @@
-import { ChatLab } from "@/components/ChatLab"
+import { ChatLab } from "@/components/chat-lab"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Error Tracking - Learn from German Mistakes | Dr. Gulko",
-  description:
-    "Identify and fix recurring German grammar mistakes. Get personalized error analysis and targeted practice drills.",
+  title: "Error Tracking - Dr. Gulko German Learning",
+  description: "Identify and practice your most common German mistakes with targeted exercises.",
 }
 
 export default function ErrorTrackingPage() {
@@ -12,9 +11,7 @@ export default function ErrorTrackingPage() {
     <ChatLab
       lab="error-tracking"
       title="Error Tracking"
-      description="Learn from mistakes (session-only)"
-      helpText="Analyze your recurring German errors and get targeted micro-drills to improve specific grammar areas."
-      defaultLevel="B1"
+      description="Analyze your German mistakes and get targeted practice exercises to improve your weak areas (session-only tracking)."
     />
   )
 }

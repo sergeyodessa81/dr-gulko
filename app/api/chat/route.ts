@@ -1,106 +1,68 @@
 import { streamText } from "ai"
-import { getAIModel } from "@/lib/ai"
-import { getSystemPrompt, type LabType, type Level } from "@/lib/system-prompts"
-import { getQuotaStatus, incrementQuota, setQuotaCookie, isQuotaExceeded } from "@/lib/quota"
+import { modelFor } from "@/lib/ai"
+import { systemPrompts, type LabType } from "@/lib/system-prompts"
+import { getQuotaStatus, createQuotaCookie } from "@/lib/quota"
 import type { NextRequest } from "next/server"
 
 export const runtime = "edge"
 
-interface ChatRequest {
-  lab: LabType
-  level?: Level
-  messages: Array<{
-    role: "user" | "assistant" | "system"
-    content: string
-  }>
-}
-
 export async function POST(req: NextRequest) {
   try {
-    // Parse request body
-    const { lab, level, messages }: ChatRequest = await req.json()
+    const { lab, level, messages } = await req.json()
 
-    // Validate required fields
-    if (!lab || !messages) {
-      return Response.json({ error: "Missing required fields: lab, messages" }, { status: 400 })
+    // Validate lab type
+    if (!systemPrompts[lab as LabType]) {
+      return Response.json({ error: "Invalid lab type" }, { status: 400 })
     }
 
-    // Check quota before processing
-    const quotaExceeded = await isQuotaExceeded()
-    if (quotaExceeded) {
-      const quotaStatus = await getQuotaStatus()
+    // Check quota
+    const quota = await getQuotaStatus()
+    if (quota.count >= 10) {
       return Response.json(
         {
-          error: "Daily limit reached. Please try again later.",
+          error: "Daily limit reached",
           limit: 10,
-          resetAt: quotaStatus.resetAt,
+          resetAt: quota.resetAt,
         },
         { status: 429 },
       )
     }
 
-    // Get system prompt for the lab
-    const systemPrompt = getSystemPrompt(lab, level)
+    // Build system prompt
+    const systemPrompt = systemPrompts[lab as LabType](level)
+    const allMessages = [{ role: "system", content: systemPrompt }, ...messages]
 
-    // Prepare messages with system prompt
-    const messagesWithSystem = [{ role: "system" as const, content: systemPrompt }, ...messages]
-
-    // Get AI model
-    const model = getAIModel()
-
-    // Stream the response
-    const result = await streamText({
-      model,
-      messages: messagesWithSystem,
-      temperature: 0.7,
-      maxTokens: 1000,
+    // Stream response
+    const result = streamText({
+      model: modelFor(),
+      messages: allMessages,
     })
 
     // Increment quota on first token
     let quotaIncremented = false
-
     const stream = new ReadableStream({
       async start(controller) {
-        const encoder = new TextEncoder()
-
-        try {
-          for await (const chunk of result.textStream) {
-            // Increment quota on first chunk
-            if (!quotaIncremented) {
-              const updatedQuota = await incrementQuota()
-              const cookieHeader = setQuotaCookie(updatedQuota)
-
-              // Send quota update as part of response headers
-              // Note: In streaming responses, we can't set headers after streaming starts
-              // The quota will be updated on the next request
-              quotaIncremented = true
-            }
-
-            controller.enqueue(encoder.encode(chunk))
+        for await (const chunk of result.textStream) {
+          if (!quotaIncremented) {
+            quotaIncremented = true
+            // This will be handled by setting the cookie in the response
           }
-        } catch (error) {
-          console.error("Streaming error:", error)
-          controller.error(error)
-        } finally {
-          controller.close()
+          controller.enqueue(new TextEncoder().encode(chunk))
         }
+        controller.close()
       },
     })
 
-    // Create response with quota cookie
+    // Create response with updated quota cookie
     const response = new Response(stream, {
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
-        "Cache-Control": "no-cache",
+        "Set-Cookie": `dg_free_uses=${createQuotaCookie({
+          count: quota.count + 1,
+          resetAt: quota.resetAt,
+        })}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${24 * 60 * 60}`,
       },
     })
-
-    // Set quota cookie if incremented
-    if (quotaIncremented) {
-      const updatedQuota = await incrementQuota()
-      const cookieHeader = setQuotaCookie(updatedQuota)
-      response.headers.set("Set-Cookie", cookieHeader)
-    }
 
     return response
   } catch (error) {

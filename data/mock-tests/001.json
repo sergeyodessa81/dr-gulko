@@ -4,34 +4,32 @@
   "lang": "de",
   "questions": [
     {
-      "type": "single",
       "id": "q1",
-      "question": "Wie heißt die Hauptstadt von Deutschland?",
-      "choices": ["München", "Berlin", "Hamburg", "Köln"],
-      "answer": 1,
-      "points": 2
-    },
-    {
       "type": "single",
-      "id": "q2",
-      "question": "Welcher Artikel gehört zu dem Wort 'Haus'?",
+      "prompt": "Wählen Sie den richtigen Artikel: ___ Arzt hilft dem Patienten.",
       "choices": ["der", "die", "das"],
-      "answer": 2,
-      "points": 1
+      "answer": 0,
+      "rubric": "1 Punkt für die richtige Wahl des Artikels."
     },
     {
-      "type": "short",
+      "id": "q2",
+      "type": "single",
+      "prompt": "Wählen Sie die korrekte Präposition: Ich warte ___ den Bus.",
+      "choices": ["für", "auf", "um"],
+      "answer": 1,
+      "rubric": "1 Punkt für die richtige Präposition."
+    },
+    {
       "id": "q3",
-      "question": "Beschreiben Sie Ihren typischen Tagesablauf. (50-80 Wörter)",
-      "rubric": "Bewertung: Grammatik (0-3), Wortschatz (0-3), Struktur (0-2), Aufgabenbezug (0-2). Mindestens 50 Wörter erforderlich.",
-      "maxPoints": 10
+      "type": "short",
+      "prompt": "Setzen Sie den Satz ins Präteritum: ‘Er kommt heute ins Krankenhaus.’",
+      "rubric": "Verwendung der korrekten Präteritum-Form von ‘kommen’ und korrekter Wortstellung. 1 Punkt; Teilkredit 0.5 bei geringfügigen Fehlern."
     },
     {
-      "type": "short",
       "id": "q4",
-      "question": "Was machen Sie gerne in Ihrer Freizeit? Begründen Sie Ihre Antwort.",
-      "rubric": "Bewertung: Inhalt und Begründung (0-4), Sprachrichtigkeit (0-3), Ausdruck (0-3). Vollständige Sätze verwenden.",
-      "maxPoints": 10
+      "type": "short",
+      "prompt": "Bildung eines korrekten Nebensatzes mit ‘weil’: ‘Er bleibt zu Hause. Er ist krank.’",
+      "rubric": "Korrekte Nebensatzstruktur mit ‘weil’, Verb am Ende, sinnvolle Interpunktion. 1 Punkt; Teilkredit 0.5 bei kleinen Fehlern."
     }
   ]
 }

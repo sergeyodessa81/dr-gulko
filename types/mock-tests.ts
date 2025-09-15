@@ -1,37 +1,34 @@
-import { z } from "zod"
+import { z } from 'zod';
 
-// Single choice question schema
 export const QuestionSingleSchema = z.object({
-  type: z.literal("single"),
   id: z.string(),
-  question: z.string(),
-  choices: z.array(z.string()).min(2),
-  answer: z.number().min(0), // Index of correct choice
-  points: z.number().positive(),
-})
+  type: z.literal('single'),
+  prompt: z.string().min(1),
+  choices: z.array(z.string().min(1)).min(2),
+  answer: z.number().int().nonnegative(), // index
+  rubric: z.string().optional(),
+});
 
-// Short answer question schema
 export const QuestionShortSchema = z.object({
-  type: z.literal("short"),
   id: z.string(),
-  question: z.string(),
-  rubric: z.string(), // Scoring criteria
-  maxPoints: z.number().positive(),
-})
+  type: z.literal('short'),
+  prompt: z.string().min(1),
+  rubric: z.string().min(1),
+});
 
-// Union of question types
-export const QuestionSchema = z.union([QuestionSingleSchema, QuestionShortSchema])
+export const QuestionSchema = z.discriminatedUnion('type', [
+  QuestionSingleSchema,
+  QuestionShortSchema,
+]);
 
-// Mock test schema
 export const MockTestSchema = z.object({
   id: z.string(),
   title: z.string(),
-  lang: z.string(),
+  lang: z.enum(['de', 'en']).default('de'),
   questions: z.array(QuestionSchema).min(1),
-})
+});
 
-// Inferred TypeScript types
-export type QuestionSingle = z.infer<typeof QuestionSingleSchema>
-export type QuestionShort = z.infer<typeof QuestionShortSchema>
-export type Question = z.infer<typeof QuestionSchema>
-export type MockTest = z.infer<typeof MockTestSchema>
+export type Question = z.infer<typeof QuestionSchema>;
+export type QuestionSingle = z.infer<typeof QuestionSingleSchema>;
+export type QuestionShort = z.infer<typeof QuestionShortSchema>;
+export type MockTest = z.infer<typeof MockTestSchema>;

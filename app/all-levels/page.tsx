@@ -1,10 +1,9 @@
-import { ChatLab } from "@/components/ChatLab"
+import { ChatLab } from "@/components/chat-lab"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "All Levels - German Placement & Study Plan | Dr. Gulko",
-  description:
-    "Find your German level and get a personalized 2-week study plan. From A0 beginner to C1 advanced with structured daily tasks.",
+  title: "All Levels - Dr. Gulko German Learning",
+  description: "Structured German learning path from A0 to C1 with placement testing and personalized plans.",
 }
 
 export default function AllLevelsPage() {
@@ -12,9 +11,7 @@ export default function AllLevelsPage() {
     <ChatLab
       lab="all-levels"
       title="All Levels"
-      description="From A0 to C1 with structured path"
-      helpText="Take a quick placement test and receive a personalized 2-week study plan with daily 15-25 minute tasks."
-      defaultLevel="A1"
+      description="Get a personalized German learning plan based on your current level. From complete beginner (A0) to advanced (C1)."
     />
   )
 }

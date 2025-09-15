@@ -1,78 +1,52 @@
-# Dr. Gulko German Learning Platform
+# Dr. Gulko - German Learning Platform
 
-A simplified, production-ready German learning platform powered by AI. Features 6 specialized labs with a FREE mode offering 10 AI responses per browser per 24 hours - no login required.
+A Next.js AI-powered German learning platform with 6 specialized labs and free tier quota system.
 
 ## Features
 
-- **AI Teacher** - Personalized German conversations with feedback
-- **Writing Lab** - Essay and email training with corrections
-- **Mock Tests** - Goethe/TELC exam preparation with scoring
-- **Medical German** - Clinical vocabulary and scenarios
-- **Error Tracking** - Session-based error analysis and drills
-- **All Levels** - Placement testing and structured learning paths (A0-C1)
-
-## Tech Stack
-
-- **Next.js 15+** with App Router and TypeScript
-- **Vercel AI SDK** with configurable providers (OpenAI, Groq, Anthropic)
-- **Tailwind CSS** + **shadcn/ui** components
-- **Edge Runtime** for AI routes
-- **Cookie-based quota system** (no database required)
+- **AI Teacher**: Conversational practice with corrections
+- **Writing Lab**: Email and essay feedback
+- **Mock Tests**: Goethe/TELC exam preparation
+- **Medical German**: Clinical vocabulary and scenarios
+- **Error Tracking**: Session-based mistake analysis
+- **All Levels**: A0-C1 placement and structured learning
 
 ## Environment Variables
 
-Create a `.env.local` file with:
+Create a `.env.local` file:
 
 \`\`\`env
 # AI Configuration
-AI_PROVIDER=openai          # "openai" | "groq" | "anthropic"
-AI_MODEL=gpt-4o-mini       # Model name for chosen provider
-OPENAI_API_KEY=your_key    # Required if using OpenAI
-GROQ_API_KEY=your_key      # Required if using Groq
-ANTHROPIC_API_KEY=your_key # Required if using Anthropic
+AI_PROVIDER=openai
+AI_MODEL=gpt-4o-mini
+AI_API_KEY=your_api_key_here
+
+# Alternative providers:
+# AI_PROVIDER=groq
+# AI_MODEL=llama-3.1-70b-versatile
+# GROQ_API_KEY=your_groq_key
+
+# AI_PROVIDER=anthropic
+# AI_MODEL=claude-3-haiku-20240307
+# ANTHROPIC_API_KEY=your_anthropic_key
 \`\`\`
 
-## Getting Started
+## Free Tier
 
-1. **Install dependencies:**
-   \`\`\`bash
-   npm install
-   \`\`\`
+- 10 AI responses per browser per 24 hours
+- No authentication required
+- Quota tracked via secure cookies
+- Conversations reset on page refresh
 
-2. **Set up environment variables:**
-   \`\`\`bash
-   cp .env.example .env.local
-   # Edit .env.local with your API keys
-   \`\`\`
+## Development
 
-3. **Run development server:**
-   \`\`\`bash
-   npm run dev
-   \`\`\`
+\`\`\`bash
+npm install
+npm run dev
+\`\`\`
 
-4. **Open [http://localhost:3000](http://localhost:3000)**
-
-## Quota System
-
-- **FREE Mode**: 10 AI responses per browser per 24 hours
-- **No login required** - quota tracked via signed cookies
-- **No persistence** - conversations reset on page refresh
-- **Rolling window** - quota resets 24 hours after first use
+Open [http://localhost:3000](http://localhost:3000) to start learning German!
 
 ## Deployment
 
-Deploy to Vercel with one click:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-repo)
-
-Make sure to add your environment variables in the Vercel dashboard.
-
-## API Routes
-
-- `POST /api/chat` - Main chat endpoint with quota enforcement
-  - Body: `{ lab, level?, messages }`
-  - Returns: Streamed AI response or 429 if quota exceeded
-
-## License
-
-MIT License - see LICENSE file for details.
+Deploy to Vercel with Edge runtime support for optimal AI streaming performance.

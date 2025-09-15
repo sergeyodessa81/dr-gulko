@@ -1,10 +1,9 @@
-import { ChatLab } from "@/components/ChatLab"
+import { ChatLab } from "@/components/chat-lab"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Medical German - Clinical Vocabulary & Scenarios | Dr. Gulko",
-  description:
-    "Learn medical German for healthcare professionals. Practice clinical dialogues, terminology, and documentation phrases.",
+  title: "Medical German - Dr. Gulko German Learning",
+  description: "Learn clinical German vocabulary and practice medical scenarios for healthcare professionals.",
 }
 
 export default function MedicalGermanPage() {
@@ -12,9 +11,7 @@ export default function MedicalGermanPage() {
     <ChatLab
       lab="medical-german"
       title="Medical German"
-      description="Clinical vocabulary & scenarios"
-      helpText="Practice medical German with doctor-patient dialogues, clinical terminology, and documentation phrases. For language training only."
-      defaultLevel="B2"
+      description="Master clinical German with medical vocabulary, patient dialogues, and documentation phrases for healthcare professionals."
     />
   )
 }

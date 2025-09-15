@@ -1,47 +1,36 @@
 import { openai } from "@ai-sdk/openai"
-import { groq } from "@ai-sdk/groq"
 import { anthropic } from "@ai-sdk/anthropic"
+import { createGroq } from "@ai-sdk/groq"
 
-export type AIProvider = "openai" | "groq" | "anthropic"
-export type AIModel = string
+const groq = createGroq({
+  apiKey: process.env.GROQ_API_KEY,
+})
 
-/**
- * Get the appropriate AI model instance based on provider and model name
- */
-export function modelFor(provider: AIProvider, model: string) {
+export function modelFor(provider?: string, model?: string) {
+  const aiProvider = provider || process.env.AI_PROVIDER || "openai"
+  const aiModel = model || process.env.AI_MODEL || getDefaultModel(aiProvider)
+
+  switch (aiProvider) {
+    case "openai":
+      return openai(aiModel)
+    case "anthropic":
+      return anthropic(aiModel)
+    case "groq":
+      return groq(aiModel)
+    default:
+      return openai(aiModel)
+  }
+}
+
+function getDefaultModel(provider: string): string {
   switch (provider) {
     case "openai":
-      return openai(model)
-    case "groq":
-      return groq(model)
+      return "gpt-4o-mini"
     case "anthropic":
-      return anthropic(model)
+      return "claude-3-haiku-20240307"
+    case "groq":
+      return "llama-3.1-70b-versatile"
     default:
-      throw new Error(`Unsupported AI provider: ${provider}`)
+      return "gpt-4o-mini"
   }
-}
-
-/**
- * Get the default model for the configured provider
- */
-export function getDefaultModel(): { provider: AIProvider; model: string } {
-  const provider = (process.env.AI_PROVIDER as AIProvider) || "openai"
-
-  const defaultModels = {
-    openai: "gpt-4o-mini",
-    groq: "llama-3.1-70b-versatile",
-    anthropic: "claude-3-haiku-20240307",
-  }
-
-  const model = process.env.AI_MODEL || defaultModels[provider]
-
-  return { provider, model }
-}
-
-/**
- * Get the configured AI model instance
- */
-export function getAIModel() {
-  const { provider, model } = getDefaultModel()
-  return modelFor(provider, model)
 }

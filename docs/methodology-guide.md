@@ -74,7 +74,7 @@
 * **Формат карточки:** `term|grammar|meaning|example_de|example_ru|tags` (RU по умолчанию).
 * **action-json** в конце ответа (если уместно):
 
-```action-json
+\`\`\`action-json
 {"action":"anki.queue","deck":"Deutsch — DrGulko","confirm":"preview","cards":[
   {"term":"schwärmen","grammar":"Verb: schwärmt · schwärmte · hat geschwärmt","meaning":"восхищаться, восторгаться","example_de":"Viele schwärmen von Zürich im Sommer.","example_ru":"Многие восторгаются Цюрихом летом.","tags":["Kapitel_03","Verb"]}
 ]}

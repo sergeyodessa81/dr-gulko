@@ -6,7 +6,7 @@ This document describes how to report security issues for **Dr. Gulko – Langua
 
 ## 🔒 Reporting a Vulnerability
 
-- **Email (preferred):** security@drgulko.org  
+- **Email (preferred):** contact@drgulko.org  
   **Fallback:** sergey.guko99@gmail.com
 - **PGP:** _optional_ — add your key block and fingerprint here  
   Fingerprint: `TODO-FINGERPRINT`

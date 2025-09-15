@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server"
 import { streamText } from "ai"
 import { baseSystem, modePrompts } from "@/lib/system-prompts"
-import { getModel, pickModel } from "@/lib/ai/providers"
+import { getModel, pickModel } from "@/lib/ai"
 import germanFew from "@/lib/fewshots/german.json"
 import editorFew from "@/lib/fewshots/editor.json"
 import examFew from "@/lib/fewshots/exam-assessor.json"

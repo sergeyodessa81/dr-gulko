@@ -50,6 +50,7 @@
     "@vercel/analytics": "latest",
     "@vitest/browser": "latest",
     "@vitest/ui": "latest",
+    "abort-controller": "latest",
     "ai": "latest",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",

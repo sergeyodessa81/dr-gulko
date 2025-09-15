@@ -1,6 +1,6 @@
-"use client";
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+"use client"
+export const dynamic = "force-dynamic"
+export const revalidate = false
 
 import { useChat } from "@ai-sdk/react"
 import { Button } from "@/components/ui/button"
@@ -170,8 +170,7 @@ export default function GermanDemoPage() {
                 disabled={isLoading}
                 className="flex-1"
               />
-              <Button type="submit" disabled={isLoading || !((input ?? '').trim())}>
-
+              <Button type="submit" disabled={isLoading || !(input ?? "").trim()}>
                 <Send className="h-4 w-4" />
               </Button>
             </form>

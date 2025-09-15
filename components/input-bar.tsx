@@ -28,13 +28,13 @@ export function InputBar({ input, handleInputChange, handleSubmit, isLoading, di
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault()
-              if (!disabled && !isLoading && input.trim()) {
+              if (!disabled && !isLoading && input?.trim()) {
                 handleSubmit(e as any)
               }
             }
           }}
         />
-        <Button type="submit" disabled={disabled || isLoading || !input.trim()} size="lg" className="px-6">
+        <Button type="submit" disabled={disabled || isLoading || !input?.trim()} size="lg" className="px-6">
           <Send className="w-4 h-4" />
         </Button>
       </div>

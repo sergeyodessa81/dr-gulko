@@ -6,9 +6,10 @@ const nav = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Blog" },
-  { href: "/free-guide", label: "Free Guide" },
+    { href: "/guide", label: "Free Guide" },
+
   { href: "/pricing", label: "Pricing" },
-  { href: "/learn", label: "Learn" },
+  
 ];
 
 export default function SiteHeader() {

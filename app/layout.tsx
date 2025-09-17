@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import "./globals.css"
+import SiteHeader from "@/components/site-header"
 
 export const metadata: Metadata = {
   title: "Dr. Gulko - Master German with AI",
@@ -21,7 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
-        <Suspense fallback={null}>{children}</Suspense>
+              <SiteHeader />
+      <Suspense fallback={null}>{children}</Suspense>
         <Analytics />
       </body>
     </html>
